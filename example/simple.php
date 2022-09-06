@@ -1,7 +1,6 @@
 <?php require __DIR__ . '/../vendor/autoload.php';
 
 use GCore\RuleEngine\Contract\StrategyInterface;
-use GCore\RuleEngine\Contract\SpecificationInterface;
 use GCore\RuleEngine\Contract\DataSourceInterface;
 use GCore\RuleEngine\Composite;
 use GCore\RuleEngine\DataSource;
@@ -10,10 +9,10 @@ use GCore\RuleEngine\RuleEngine;
 
 class AccountCanTransfer extends Composite
 {
-    /**
-     * @var \DataSource  Local db
-     */
-    protected $db;
+	/**
+	 * @var \DataSource  Local db
+	 */
+	protected $db;
 
 	/**
 	 * Construct the custom specification
@@ -21,28 +20,28 @@ class AccountCanTransfer extends Composite
 	 * @param mixed   $account
 	 * @param integer $amountToTransfer
 	 */
-    public function __construct($db)
-    {
+	public function __construct($db)
+	{
 		$this->db = $db;
-    }
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isSatisfiedBy(DataSourceInterface $payload) : bool
-    {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isSatisfiedBy(DataSourceInterface $payload) : bool
+	{
 		$accountOrigin = $this->db->get('accounts')[$payload->get('account_origin_id')];
 
-        return ($accountOrigin->balance - $payload->get('amount')) > 0;
-    }
+		return ($accountOrigin->balance - $payload->get('amount')) > 0;
+	}
 }
 
 class PersonIsVerified extends Composite
 {
-    /**
-     * @var \DataSource  Local db
-     */
-    protected $db;
+	/**
+	 * @var \DataSource  Local db
+	 */
+	protected $db;
 
 	/**
 	 * Construct the custom specification
@@ -66,23 +65,23 @@ class PersonIsVerified extends Composite
 		return $person->email_verified === 1 && $person->phone_verified === 1 && $person->address_verified === 1;
 	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isSatisfiedBy(DataSourceInterface $payload) : bool
-    {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isSatisfiedBy(DataSourceInterface $payload) : bool
+	{
 		$accountOrigin = $this->db->get('accounts')[$payload->get('account_origin_id')];
 		$accountTarget = $this->db->get('accounts')[$payload->get('account_target_id')];
 
 		return $this->isVerified($accountOrigin->person) && $this->isVerified($accountTarget->person);
-    }
+	}
 }
 
 class Taxable extends Composite
 {
-    /**
-     * @var \array  List of subsidiary that applie tax
-     */
+	/**
+	 * @var \array  List of subsidiary that applie tax
+	 */
 	protected $taxSubidiary;
 
 	/**
@@ -95,13 +94,13 @@ class Taxable extends Composite
 		$this->taxSubidiary = $taxSubidiary;
 	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isSatisfiedBy(DataSourceInterface $payload) : bool
-    {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isSatisfiedBy(DataSourceInterface $payload) : bool
+	{
 		return in_array($payload->get('subsidiary'), $this->taxSubidiary);
-    }
+	}
 }
 
 /**
@@ -109,10 +108,10 @@ class Taxable extends Composite
  */
 class TransferStrategy implements StrategyInterface
 {
-    /**
-     * @var \DataSource  Local db
-     */
-    protected $db;
+	/**
+	 * @var \DataSource  Local db
+	 */
+	protected $db;
 
 	/**
 	 * Construct the custom specification
@@ -148,10 +147,10 @@ class TransferStrategy implements StrategyInterface
  */
 class TaxStrategy implements StrategyInterface
 {
-    /**
-     * @var \DataSource  Local db
-     */
-    protected $db;
+	/**
+	 * @var \DataSource  Local db
+	 */
+	protected $db;
 	protected $tax;
 
 	/**
